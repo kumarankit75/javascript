@@ -1,55 +1,21 @@
-const form = document.querySelector('form');
-const resultDiv = document.querySelector('.result');
+const time = document.getElementById('time');
+const timeformate = document.getElementById('timeformate');
 
-form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    getWordInfo(form.elements[0].value);
+document.addEventListener('DOMContentLoaded',()=>{
+    setInterval(showTime,1000);
 });
 
-const getWordInfo = async (word) => {
-    try {
-        resultDiv.innerHTML = "Fetching Data.....";
-        const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
-        const data = await response.json();
-        let definitions = data[0].meanings[0].definitions[0];
-        resultDiv.innerHTML = `
-    <h2><strong>Word:</strong> ${data[0].word}</h2>
-    <p class="partOfSpeech">${data[0].meanings[0].partOfSpeech}</p>
-    <p><strong>Meaning:</strong>${definitions.definition === undefined ? "Not Found" :
-    definitions.definition}</p>
-    <p class="Synonyms"><strong>Synonyms:</strong> ${definitions.synonyms === [] ? "Not Found" : definitions.synonyms}</p>
-    <p><strong>Example:</strong>${definitions.example === undefined ? "Not Found" : definitions.example}</p>
-    <p><strong>Antonyms</strong></p>
-    `;
-   // synonyms 
-   
-    //fetching Antonyms
-        if (definitions.antonyms.length === 0) {
-            resultDiv.innerHTML += `<span>Not Found</span>`;
-            // resultDiv.childNodes[5].innerHTML += `<span>Not Found</span>`;
+const showTime = ()=>{
+let date = new Date();
 
-        }
-        else {
-            for (let i = 0; i < definitions.antonyms.length; i++){
-                resultDiv.innerHTML += `<li>${definitions.antonyms[i]}</li>`
-            // resultDiv.childNodes[5].innerHTML += `<li>${definitions.antonyms[i]}</li>`
-        }
-    }
-    
-    // synonyms (Task)
-    // if (definitions.synonyms.length === 0) {
-    //     resultDiv.innerHTML += `<span>Not Found</span>`;
+let hr= date.getHours();
+let mins = date.getMinutes();
+let secs = date.getSeconds();
 
-    // }
-    // else {
-    //     for (let i = 0; i < definitions.synonyms.length; i++) {
-    //     }
-    // }
-    
-//Adding read more button
-resultDiv.innerHTML += `<div><a href="${data[0].sourceUrls}" target="_blank">Read More</a></div>`;
-    }
-    catch (error) {
-    resultDiv.innerHTML = `<p>Sorry, the word could not be found</p> ${error}`;
+hr = hr<10 ? `0${hr}` : hr;
+mins = mins<10 ? `0${mins}` : mins;
+secs = secs<10 ? `0${secs}` : secs;
+
+time.innerHTML = `${hr} : ${mins} : ${secs}`;
+timeformate.innerHTML = hr>12 ? "PM" : "AM";
 }
-    }
